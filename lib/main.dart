@@ -25,6 +25,11 @@ class MyHomeState extends State<MyHome> {
   final TextEditingController taskController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<String> _tasks = [];
+
+  void remove(int item) {
+    _tasks.removeAt(item);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,11 +72,10 @@ class MyHomeState extends State<MyHome> {
                       child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                            setState(() {
+                              setState(() {
                                 _tasks.add(taskController.text);
-                            });
+                              });
 
- 
                               taskController.clear();
                             }
                           },
@@ -93,11 +97,19 @@ class MyHomeState extends State<MyHome> {
               child: ListView.builder(
                 itemCount: _tasks.length,
                 itemBuilder: (context, item) {
-                  return Card(
-                    child: ListTile(
-                      title: Text(_tasks[item]),
-                    ),
-                  );
+                  return Dismissible(
+                      background: Container(
+                        color: Colors.red.withOpacity(0.3),
+                      ),
+                      onDismissed: (direction) {
+                        remove(item);
+                      },
+                      key: UniqueKey(),
+                      child: Card(
+                        child: ListTile(
+                          title: Text(_tasks[item]),
+                        ),
+                      ));
                 },
               ),
             ),
